@@ -7,6 +7,17 @@ import os
 import time
 from typing import List, Dict, Optional
 from pathlib import Path
+import logging
+
+
+def configure_logger():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(logging.FileHandler("scheduler.log"))
+    return logger
+
+
+logger = configure_logger()
 
 
 class GPUManager:
@@ -23,7 +34,6 @@ class GPUManager:
         self.job_per_gpu: Dict[str:int] = {}
         for i in self.available_gpus:
             self.job_per_gpu[i] = 0
-        print()
 
     def get_any_available_gpu(self) -> Optional[str]:
         for id_, n_jobs in self.job_per_gpu.items():
@@ -34,9 +44,9 @@ class GPUManager:
     def allocate_job(self, command: str):
         gpu = self.get_any_available_gpu()
         if not gpu:
-            print("No GPU is available now")
+            logger.info("No GPU is available now")
             return False
-        print(f"GPU{gpu} is available to run {command}")
+        logger.info(f"GPU{gpu} is available to run {command}")
         self.run_command_with_gpu(command, gpu)
         self.job_per_gpu[gpu] += 1
         return True
