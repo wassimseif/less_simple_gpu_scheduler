@@ -1,6 +1,7 @@
 simple_gpu_scheduler
 --------------------
 
+## Fork of this https://github.com/ExpectationMax/simple_gpu_scheduler
 [![PyPI version](https://badge.fury.io/py/simple-gpu-scheduler.svg)](https://badge.fury.io/py/simple-gpu-scheduler) [![Downloads](https://pepy.tech/badge/simple-gpu-scheduler)](https://pepy.tech/project/simple-gpu-scheduler)
 
 A simple scheduler to run your commands on individual GPUs.  Following the
