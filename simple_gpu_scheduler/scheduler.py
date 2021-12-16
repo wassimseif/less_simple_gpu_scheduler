@@ -4,12 +4,13 @@ import threading
 import subprocess
 import sys
 import os
+from typing import List
 
 
-class GPUManager():
+class GPUManager:
     """GPU manager, keeps track which GPUs used and which are avaiable."""
 
-    def __init__(self, available_gpus):
+    def __init__(self, available_gpus: List[str]):
         """Initialize GPU manager.
 
         Args:
@@ -40,14 +41,14 @@ class GPUManager():
             self.semaphore.release()
 
 
-class GPU():
+class GPU:
     """Representation of a GPU."""
 
     def __init__(self, nr, manager):
         """Set up GPU Object.
 
         Args:
-            nr: Which GPU id the GPU has
+            nr: The id of the GPU
             manager: The manager of the GPU
 
         """
@@ -74,25 +75,18 @@ def run_command_with_gpu(command, gpu):
 
     """
     myenv = os.environ.copy()
-    myenv['CUDA_VISIBLE_DEVICES'] = str(gpu)
-    print(f'Processing command `{command}` on gpu {gpu}')
+    myenv["CUDA_VISIBLE_DEVICES"] = str(gpu)
+    print(f"Processing command `{command}` on gpu {gpu}")
 
     def run_then_release_GPU(command, gpu):
         myenv = os.environ.copy()
-        myenv['CUDA_VISIBLE_DEVICES'] = str(gpu)
-        proc = subprocess.Popen(
-            args=command,
-            shell=True,
-            env=myenv
-        )
+        myenv["CUDA_VISIBLE_DEVICES"] = str(gpu)
+        proc = subprocess.Popen(args=command, shell=True, env=myenv)
         proc.wait()
         gpu.release()
         return
 
-    thread = threading.Thread(
-        target=run_then_release_GPU,
-        args=(command, gpu)
-    )
+    thread = threading.Thread(target=run_then_release_GPU, args=(command, gpu))
     thread.start()
     # returns immediately after the thread starts
     return thread
@@ -114,14 +108,14 @@ def read_commands_and_run(gpu_manager):
 def main():
     """Read command line arguments and start reading from stdin."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpus', nargs='+', type=str, required=True)
+    parser.add_argument("--gpus", nargs="+", type=str, required=True)
     args = parser.parse_args()
 
     # Support both comma separated and individually passed GPU ids
-    gpus = args.gpus if len(args.gpus) > 1 else args.gpus[0].split(',')
+    gpus = args.gpus if len(args.gpus) > 1 else args.gpus[0].split(",")
     gpu_manager = GPUManager(gpus)
     read_commands_and_run(gpu_manager)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
