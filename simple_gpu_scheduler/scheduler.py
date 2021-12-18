@@ -12,8 +12,15 @@ import logging
 
 def configure_logger():
     logger = logging.getLogger(__name__)
+    formatter = logging.Formatter(
+        "[%(levelname)s] - %(asctime)s - : %(message)s"
+    )
+
     logger.setLevel(logging.INFO)
-    logger.addHandler(logging.FileHandler("scheduler.log"))
+    fh = logging.FileHandler("scheduler.log", mode="w")
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
     return logger
 
 
@@ -44,9 +51,10 @@ class GPUManager:
     def allocate_job(self, command: str):
         gpu = self.get_any_available_gpu()
         if not gpu:
-            logger.info("No GPU is available now")
             return False
-        logger.info(f"GPU{gpu} is available to run {command}")
+            # logger.info(f"No GPU to run {command}")
+
+        # logger.info(f"GPU{gpu} is available to run {command}")
         self.run_command_with_gpu(command, gpu)
         self.job_per_gpu[gpu] += 1
         return True
@@ -59,8 +67,10 @@ class GPUManager:
         def run_then_release_GPU(command, gpu):
             myenv = os.environ.copy()
             myenv["CUDA_VISIBLE_DEVICES"] = str(gpu)
+            logger.info(f"Command {command} running on GPU {gpu}")
             proc = subprocess.Popen(args=command, shell=True, env=myenv)
             proc.wait()
+            logger.info(f"Command {command} is done.")
             self.job_per_gpu[gpu] -= 1
             return
 
@@ -81,9 +91,11 @@ def read_commands_and_run(gpu_manager, commands_files: Path):
         # Make sure that we don't keep this file open or we can't edit it while the scheduler is running
         lines = fp.readlines()
     lines = [i.rstrip() for i in lines]  # Clean up the white spaces
+    logger.info(f"I have {len(lines)} job to allocate")
     # Divide list into chunks
     current_index = 0
     while current_index < len(lines):
+        # logger.info(f"Current Job waiting is {lines[current_index]}")
         command = lines[current_index]
         if gpu_manager.allocate_job(command):
             current_index += 1
