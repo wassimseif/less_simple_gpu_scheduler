@@ -99,6 +99,7 @@ def read_commands_and_run(gpu_manager, commands_files: Path):
         command = lines[current_index]
         if gpu_manager.allocate_job(command):
             current_index += 1
+            time.sleep(2)
             continue
         time.sleep(10)
 
