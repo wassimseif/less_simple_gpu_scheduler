@@ -7,15 +7,15 @@ def read_readme():
 
 
 setup(
-    name="simple_gpu_scheduler",
-    version="0.1.4",
-    description="A simple scheduler for running commands on multiple GPUs.",
+    name="less_simple_gpu_scheduler",
+    version="0.1.1",
+    description="A less simple scheduler for running commands on multiple GPUs.",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    url="https://github.com/ExpectationMax/simple_gpu_scheduler",
-    author="Max Horn",
-    author_email="maexlich@gmail.com",
-    packages=["simple_gpu_scheduler"],
+    url="https://github.com/wassimseif/less_simple_gpu_scheduler",
+    author="Wassim Seifeddine",
+    author_email="wassim@wassimseifeddine.com",
+    packages=["less_simple_gpu_scheduler"],
     python_requires=">3.6",
     classifiers=[
         "Programming Language :: Python :: 3 :: Only",
@@ -24,8 +24,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "simple_gpu_scheduler=simple_gpu_scheduler.scheduler:main",
-            "simple_hypersearch=simple_gpu_scheduler.hypersearch:generate_commands",
+            "less_simple_gpu_scheduler=less_simple_gpu_scheduler.scheduler:main",
         ],
     },
     zip_safe=False,

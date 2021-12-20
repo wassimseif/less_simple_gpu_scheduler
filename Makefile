@@ -1,6 +1,6 @@
 VERSION=0.1.4
-WHEEL=dist/simple_gpu_scheduler-$(VERSION)-py3-none-any.whl
-SOURCE_DIST=dist/simple_gpu_scheduler-$(VERSION).tar.gz
+WHEEL=dist/less_simple_gpu_scheduler-$(VERSION)-py3-none-any.whl
+SOURCE_DIST=dist/less_simple_gpu_scheduler-$(VERSION).tar.gz
 
 .PHONY: build upload
 
@@ -9,9 +9,9 @@ upload: $(WHEEL) $(SOURCE_DIST)
 
 build: $(WHEEL) $(SOURCE_DIST)
 
-$(WHEEL): setup.py simple_gpu_scheduler/*
+$(WHEEL): setup.py less_simple_gpu_scheduler/*
 	python3 setup.py bdist_wheel
 
-$(SOURCE_DIST): setup.py simple_gpu_scheduler/*
+$(SOURCE_DIST): setup.py less_simple_gpu_scheduler/*
 	python3 setup.py sdist
 
